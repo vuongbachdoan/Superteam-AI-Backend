@@ -1,80 +1,46 @@
+### API Documentation
+
+**Endpoint:**  
+`https://<sample>.execute-api.us-east-1.amazonaws.com/prod/docs`
 
 ---
 
-# How to deploy API
+### Request
 
-## Prerequisites
-- Install and configure [AWS CLI](https://aws.amazon.com/cli/)
-- Install and bootstrap [AWS CDK](https://aws.amazon.com/cdk/)
-- Pick a region from the Amazon Bedrock [Supported Regions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-regions.html)
+**Headers:**  
+- `Content-Type`: `application/json`
 
-## Deploy APIs
-
-```
-npm install
-cdk deploy --context allowedip="xxx.xxx.xxx.xxx/32"
-```
-
-> Replace the value of allowedip with your public IPv4 address
-
----
-
-# RAG API cURL Commands
-
-This guide provides syntax, parameter explanations, and examples for testing the RAG APIs using `cURL`.
-
----
-
-## API Commands
-
-### **1. Set Model (QAHeader.js)**
-
-#### **Syntax**
-```bash
-curl -X POST BASE_URL -H "Content-Type: application/json" \
--d '{
-  "modelId": "MODEL_ID"
-}'
-```
-
-#### **Parameters**
-- `BASE_URL`: The endpoint to set the model.
-- `MODEL_ID`: The ID of the model to configure.
-
-#### **Example**
-```bash
-curl -X POST https://api.example.com/setModel -H "Content-Type: application/json" \
--d '{
-  "modelId": "amazon.titan-text-premier-v1:0"
-}'
+**Payload:**  
+```json
+{
+    "question": "where is AWS Headquater",
+    "modelId": "amazon.titan-text-premier-v1:0"
+}
 ```
 
 ---
 
-### **2. Submit URLs (WebUrlsForm.js)**
+### Response
 
-#### **Syntax**
+```json
+{
+    "response": "Seattle, Washington",
+    "citation": "https://www.aboutamazon.com/news/amazon-offices/the-next-chapter-for-hq2-sustainable-buildings-surrounded-by-nature",
+    "sessionId": "44216406-7884-4947-8ccc-dc5e13fdfb24"
+}
+```
+
+---
+
+### Sample cURL
+
 ```bash
-curl -X POST BASE_URL -H "Content-Type: application/json" \
+curl -X POST API_ENDPOINT \
+-H "Content-Type: application/json" \
 -d '{
-  "urls": ["URL1", "URL2"],
-  "exclusionFilters": ["FILTER1"],
-  "inclusionFilters": ["FILTER2"]
+    "question": "where is AWS Headquater",
+    "modelId": "amazon.titan-text-premier-v1:0"
 }'
 ```
 
-#### **Parameters**
-- `BASE_URL`: The API endpoint for URL submission.
-- `urls`: Array of URLs to process.
-- `exclusionFilters`: Keywords to exclude URLs.
-- `inclusionFilters`: Keywords to include URLs.
-
-#### **Example**
-```bash
-curl -X POST https://api.example.com/updateUrls -H "Content-Type: application/json" \
--d '{
-  "urls": ["https://example.com/page1", "https://example.com/page2"],
-  "exclusionFilters": ["remove-this"],
-  "inclusionFilters": ["add-that"]
-}'
-```
+> Replace API_ENDPOINT with API Gateway Endpoint

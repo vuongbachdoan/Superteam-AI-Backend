@@ -268,16 +268,51 @@ export class BackendStack extends Stack {
      * Create and Associate ACL with Gateway
      */
     // Create an IPSet
-    const allowedIpSet = new wafv2.CfnIPSet(this, "DevIpSet", {
-      addresses: whitelistedIps, // whitelisted IPs in CIDR format
-      ipAddressVersion: "IPV4",
-      scope: "REGIONAL",
-      description: "List of allowed IP addresses",
-    });
+    // const allowedIpSet = new wafv2.CfnIPSet(this, "DevIpSet", {
+    //   addresses: whitelistedIps, // whitelisted IPs in CIDR format
+    //   ipAddressVersion: "IPV4",
+    //   scope: "REGIONAL",
+    //   description: "List of allowed IP addresses",
+    // });
+    // // Create our Web ACL
+    // const webACL = new wafv2.CfnWebACL(this, "WebACL", {
+    //   defaultAction: {
+    //     block: {},
+    //   },
+    //   scope: "REGIONAL",
+    //   visibilityConfig: {
+    //     cloudWatchMetricsEnabled: true,
+    //     metricName: "webACL",
+    //     sampledRequestsEnabled: true,
+    //   },
+    //   rules: [
+    //     {
+    //       name: "IPAllowList",
+    //       priority: 1,
+    //       statement: {
+    //         ipSetReferenceStatement: {
+    //           arn: allowedIpSet.attrArn,
+    //         },
+    //       },
+    //       action: {
+    //         allow: {},
+    //       },
+    //       visibilityConfig: {
+    //         sampledRequestsEnabled: true,
+    //         cloudWatchMetricsEnabled: true,
+    //         metricName: "IPAllowList",
+    //       },
+    //     },
+    //   ],
+    // });
+
+    /**
+     * Create and Associate ACL with Gateway
+     */
     // Create our Web ACL
     const webACL = new wafv2.CfnWebACL(this, "WebACL", {
       defaultAction: {
-        block: {},
+        allow: {}, // Allow all traffic by default
       },
       scope: "REGIONAL",
       visibilityConfig: {
@@ -285,25 +320,7 @@ export class BackendStack extends Stack {
         metricName: "webACL",
         sampledRequestsEnabled: true,
       },
-      rules: [
-        {
-          name: "IPAllowList",
-          priority: 1,
-          statement: {
-            ipSetReferenceStatement: {
-              arn: allowedIpSet.attrArn,
-            },
-          },
-          action: {
-            allow: {},
-          },
-          visibilityConfig: {
-            sampledRequestsEnabled: true,
-            cloudWatchMetricsEnabled: true,
-            metricName: "IPAllowList",
-          },
-        },
-      ],
+      rules: [], // No specific rules for blocking or allowing traffic
     });
 
     const webAclLogGroup = new logs.LogGroup(this, "awsWafLogs", {
